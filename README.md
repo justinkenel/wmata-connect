@@ -1,64 +1,44 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Wmata Connect
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Small web application that allows a user to select a metro station and then see the trains that will be arriving, including the line, their destination, and ETA.
 
-## About Laravel
+This is built using [Laravel](https://laravel.com/) with a [Vue](https://v2.vuejs.org/) frontend. [Vuetify](https://vuetifyjs.com/en/) was used as a component library. Running this locally requires PHP, [artisan](https://laravel.com/docs/9.x/artisan), and [composer](https://getcomposer.org/).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Local Dev
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+You must have an application registered on https://developer.wmata.com/. You will need to create a new `.env` file based on the `.env.example` file at the root level - it should have `WMATA_API_KEY` set to your subscription API key from the "Default Tier" on the product page.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To run locally, download the repo and run:
 
-## Learning Laravel
+```
+composer install
+php artisan serve
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Then navigate to `localhost:8000` (or possibly a different port - check your console).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The repo ships with a full build of the UI - run `npm install` and `npm run dev` to build locally.
 
-## Laravel Sponsors
+## Overview
+An overview of the backend and frontend:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Backend
+The server exposes two APIs -
+- `/station` to get a list of stations
+- `/station/{id}` to get a list of trains that will soon arrive at the station
 
-### Premium Partners
+The route definitions can be found in `routes/api.php`, while the implementations for those routes can be found in `app/Services/WmataApi.php`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### FrontEnd
+There are two components to the front end -
 
-## Contributing
+- `resources/js/components/StationSearchField.vue` contains the logic for getting the list of stations and allowing the user to search using an autocomplete
+- `resources/js/components/NextTrainList.vue` contains the rendering of arriving trains once a station has been selected
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+These are collected, with their shared state, in `resources/js/components/TrainUpdates.vue`, which is the top level component.
 
-## Code of Conduct
+## Potential Updates
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Rate Limiting - the Wmata API has a rate limit of 10 calls/second - a library such as https://github.com/nikolaposa/rate-limit could be used with either an in memory or Redis (for scalability) implementation. In the case of an error, the backend could return a specific response indicating the rate limit, and the front end would display this to the user. It could also prevent input on the front end.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Alternate Station List Caching - currently the station list is cached on the server after it has been loaded once - however, this list is unlikely to change, and could be either committed alongside the codebase as a file, or stashed in another lower latency data source (SQL server, Blob storage, etc).
