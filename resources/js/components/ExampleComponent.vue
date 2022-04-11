@@ -1,23 +1,24 @@
-<template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
+<script>
+import StationSearchField from './StationSearchField.vue';
 
-                    <div class="card-body">
-                        I'm an example component.
+export default {
+    components: { StationSearchField }
+}
+</script>
+
+<template>
+    <v-app>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">Wmata Connect</div>
+                        <div class="card-body">
+                            <station-search-field></station-search-field>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </v-app>
 </template>
-
-<script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
-    }
-</script>
