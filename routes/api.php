@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Http;
 
+use App\Services\WmataApi;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,21 +18,11 @@ use Illuminate\Support\Facades\Http;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::get('/station', function(WmataApi $api) {
+    return $api->getStationList();
+});
 
-
-
-Route::get('/station', function() {
-    $API_KEY = $_ENV['WMATA_API_KEY'];
-    $WMATA_API_URI = 'https://api.wmata.com/Rail.svc/json';
-    try {
-        $res = Http::withHeaders([
-            'api_key' => $API_KEY
-        ])->get("$WMATA_API_URI/jStations");
-        return $res->body();
-    } catch(Exception $e) {
-        return $e->getMessage();
-    }
+Route::get('/station/{id}', function($id, WmataApi $api) {
+    $next_trains = $api->getNextTrains($id);
+    return $next_trains;
 });
