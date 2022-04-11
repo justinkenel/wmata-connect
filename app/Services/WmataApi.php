@@ -5,6 +5,13 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+// The Wmata API documentation can be found here:
+//   https://developer.wmata.com/
+// This makes use of two APIs:
+//   - Rail Station Information
+//       https://developer.wmata.com/docs/services/5476364f031f590f38092507/operations/5476364f031f5909e4fe330c
+//   - Real-Time Rail Predictions
+//       https://developer.wmata.com/docs/services/547636a6f9182302184cda78/operations/547636a6f918230da855363f
 class WmataApi
 {
     public function __construct(string $base_uri, string $api_key) {
