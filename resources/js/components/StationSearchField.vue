@@ -1,13 +1,19 @@
 <script>
 export default {
-    data: () => ({
-        values:[],
-        items:[],
+    emits: ['change'],
 
-        stations: [],
-        loading: true,
-        error: null
-    }),
+    data() {
+        return {
+            values:[],
+            items:[],
+
+            stations: [],
+            loading: true,
+            error: null,
+
+            onChange: (value) => this.$emit('change', value)
+        };
+    },
 
     mounted() {
         axios.get('/api/station')
@@ -19,7 +25,6 @@ export default {
                     text: x.Name,
                     value: x.Code
                 }));
-                // this.values = this.stations.map(x => x.Code);
 
                 console.log('loaded', this);
             })
@@ -43,8 +48,12 @@ export default {
                     dense
                     chips
                     small-chips
-                    label="Select Station"
+                    label="Selection Station"
+                    @change="onChange"
+                    hint="Select from the list or start typing the name of a station to search"
+                    persistent-hint
                 ></v-autocomplete>
+
             </v-col>
         </v-row>
         </v-container>

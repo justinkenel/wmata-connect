@@ -25,7 +25,7 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <example-component></example-component>
+            <train-updates></train-updates>
         </div>
     </body>
 </html>

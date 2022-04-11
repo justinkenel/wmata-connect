@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WmataApi
 {
@@ -17,12 +18,17 @@ class WmataApi
     private $station_list_cache;
 
     public function getStationList() {
-        if(!is_null($this->station_list_cache)) return $this->station_list_cache;
+        if(!is_null($this->station_list_cache)) {
+            Log::info("Using Cached Value");
+            return $this->station_list_cache;
+        }
 
+        Log::info("Requesting Station List");
         $res = Http::withHeaders([
             'api_key' => $this->api_key
         ])->get("$this->base_uri/Rail.svc/json/jStations");
         $this->station_list_cache = $res->json();
+        Log::info("Returning Station List");
         return $this->station_list_cache;
     }
 
