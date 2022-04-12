@@ -4,6 +4,8 @@ Small web application that allows a user to select a metro station and then see 
 
 This is built using [Laravel](https://laravel.com/) with a [Vue](https://v2.vuejs.org/) frontend. [Vuetify](https://vuetifyjs.com/en/) was used as a component library. Running this locally requires PHP, [artisan](https://laravel.com/docs/9.x/artisan), and [composer](https://getcomposer.org/).
 
+![image](https://user-images.githubusercontent.com/2307171/162852101-486fc4ee-a45e-4381-b694-c85a6f577408.png)
+
 ## Local Dev
 
 You must have an application registered on https://developer.wmata.com/. You will need to create a new `.env` file based on the `.env.example` file at the root level - it should have `WMATA_API_KEY` set to your subscription API key from the "Default Tier" on the product page.
@@ -29,7 +31,7 @@ The server exposes two APIs -
 
 The route definitions can be found in `routes/api.php`, while the implementations for those routes can be found in `app/Services/WmataApi.php`
 
-### FrontEnd
+### Front End
 There are two components to the front end -
 
 - `resources/js/components/StationSearchField.vue` contains the logic for getting the list of stations and allowing the user to search using an autocomplete
