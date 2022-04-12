@@ -43,4 +43,8 @@ These are collected, with their shared state, in `resources/js/components/TrainU
 
 Rate Limiting - the Wmata API has a rate limit of 10 calls/second - a library such as https://github.com/nikolaposa/rate-limit could be used with either an in memory or Redis (for scalability) implementation. In the case of an error, the backend could return a specific response indicating the rate limit, and the front end would display this to the user. It could also prevent input on the front end.
 
-Alternate Station List Caching - currently the station list is cached on the server after it has been loaded once - however, this list is unlikely to change, and could be either committed alongside the codebase as a file, or stashed in another lower latency data source (SQL server, Blob storage, etc).
+Alternate Station List Caching - currently the station list is cached on the server after it has been loaded once - however, this list is unlikely to change, and could be either committed alongside the codebase as a file, or stashed in another lower latency data source (SQL, Blob storage, etc).
+
+Additional Caching - given that the values for arriving trains will also have a relatively low latency, these values could be cached for (probably) at least a minute to reduce calls to the Wmata API. According to the API, the data is refreshed once every 20 to 30 seconds.
+
+Alternative Caching / Loading - A separate worker process could call the Next Trains API using `All` to get all train predictions every 30 seconds and save them to a lower latency data source (Redis, SQL, etc).
